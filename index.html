@@ -845,6 +845,69 @@
       color: #000000;
     }
 
+
+    /* Floating Fullscreen HUD Toggle */
+    .floating-fullscreen-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      z-index: 45;
+      background: rgba(12, 16, 23, 0.78);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: var(--gold-light);
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 0.4rem 0.85rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      user-select: none;
+    }
+
+    .floating-fullscreen-btn:hover {
+      background: rgba(26, 34, 48, 0.92);
+      border-color: var(--gold);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
+      transform: translateY(-1px);
+    }
+
+    body.is-fullscreen-mode .floating-fullscreen-btn {
+      border-color: rgba(56, 189, 248, 0.45);
+      color: var(--cyan);
+      background: rgba(8, 14, 24, 0.85);
+    }
+
+    body.is-fullscreen-mode .floating-fullscreen-btn:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+    }
+
+    .fs-indicator-badge {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* Native browser fullscreen styling */
+    :fullscreen, ::backdrop {
+      background-color: #05070d;
+    }
+    :-webkit-full-screen {
+      background-color: #05070d;
+    }
+
     /* Ren'Py Authentic Quick Menu Strip */
     .renpy-quick-bar {
       display: flex;
@@ -2054,6 +2117,11 @@
           <span id="btn-continue">⏩ Lanjutkan Penyelidikan</span><span id="btn-continue-sub" class="continue-subtext"></span>
           <span>➔</span>
         </button>
+        <button class="main-menu-btn" style="border-left-color: var(--cyan);" onclick="toggleFullscreen()">
+          <span id="btn-menu-fullscreen">⛶ Mode Layar Penuh (Fullscreen) [F]</span>
+          <span id="btn-menu-fs-indicator" class="fs-indicator-badge">OFF</span>
+        </button>
+
         <button class="main-menu-btn" onclick="openSaveLoadModal('load')">
           <span id="btn-load-game">📂 Muat Berkas Kasus (Save Slots)</span>
           <span>➔</span>
@@ -2241,6 +2309,10 @@
                 <button class="renpy-quick-item" onclick="event.stopPropagation(); switchView('library');" title="Buka Arsip 102 Kasus Nyata Dunia">
                   <span>🗄️</span> <span>LIBRARY</span>
                 </button>
+                <button class="renpy-quick-item" id="btn-quick-fullscreen" onclick="event.stopPropagation(); toggleFullscreen();" title="Layar Penuh / Fullscreen [F]">
+                  <span class="fs-icon">⛶</span> <span class="fs-text">FULL</span>
+                </button>
+
                 <button class="renpy-quick-item" onclick="event.stopPropagation(); openSettingsModal();" title="Buka Pengaturan Audio, Vokal, & Bahasa">
                   <span>⚙️</span> <span>PREFS</span>
                 </button>
@@ -2501,6 +2573,16 @@
     <div class="modal-box" style="max-width: 540px;">
       <button class="modal-close-btn" onclick="closeSettingsModal()">&times;</button>
       <h2 class="modal-title" id="m-set-title">PENGATURAN & BAHASA</h2>
+
+      <!-- Display / Fullscreen Mode -->
+      <div class="settings-group">
+        <label class="settings-label" id="m-set-lbl-display">TAMPILAN LAYAR (DISPLAY MODE):</label>
+        <div class="settings-options-row">
+          <button class="settings-pill-btn" id="btn-set-fullscreen-toggle" onclick="toggleFullscreen()">
+            ⛶ Masuk Layar Penuh (Fullscreen) [F]
+          </button>
+        </div>
+      </div>
 
       <!-- Pressure Timer Toggle -->
       <div class="settings-group">
@@ -7189,6 +7271,107 @@ function applyLanguage() {
   }
 }
 
+
+// ==========================================
+// HTML5 FULLSCREEN API & IMMERSIVE DISPLAY
+// ==========================================
+function isFullscreenActive() {
+  return !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  );
+}
+
+function enterFullscreen() {
+  const el = document.documentElement;
+  try {
+    if (!isFullscreenActive()) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else if (el.mozRequestFullScreen) {
+        el.mozRequestFullScreen();
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
+      }
+    }
+  } catch (err) {
+    // Graceful fallback
+  }
+}
+
+function exitFullscreen() {
+  try {
+    if (isFullscreenActive()) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  } catch (err) {
+    // Graceful fallback
+  }
+}
+
+function toggleFullscreen() {
+  if (isFullscreenActive()) {
+    exitFullscreen();
+  } else {
+    enterFullscreen();
+  }
+}
+
+function updateFullscreenUI() {
+  const isFs = isFullscreenActive();
+  document.body.classList.toggle('is-fullscreen-mode', isFs);
+
+  // Update Ren'Py quick bar button
+  const quickBtn = document.getElementById('btn-quick-fullscreen');
+  if (quickBtn) {
+    const icon = quickBtn.querySelector('.fs-icon');
+    const text = quickBtn.querySelector('.fs-text');
+    if (icon) icon.textContent = isFs ? '🗗' : '⛶';
+    if (text) text.textContent = isFs ? 'WINDOW' : 'FULL';
+  }
+
+  // Update floating button
+  const floatBtn = document.getElementById('floating-fullscreen-btn');
+  if (floatBtn) {
+    const floatIcon = floatBtn.querySelector('.fs-float-icon');
+    const floatText = floatBtn.querySelector('.fs-float-label');
+    if (floatIcon) floatIcon.textContent = isFs ? '🗗' : '⛶';
+    if (floatText) floatText.textContent = isFs ? 'WINDOW' : 'FULLSCREEN';
+  }
+
+  // Update main menu indicator
+  const menuFsInd = document.getElementById('btn-menu-fs-indicator');
+  if (menuFsInd) {
+    menuFsInd.textContent = isFs ? 'ON' : 'OFF';
+  }
+
+  // Update settings modal toggle
+  const settingsBtn = document.getElementById('btn-set-fullscreen-toggle');
+  if (settingsBtn) {
+    settingsBtn.textContent = isFs 
+      ? (currentLang === 'en' ? '🗗 Exit Fullscreen (Windowed)' : '🗗 Keluar Fullscreen (Mode Jendela)')
+      : (currentLang === 'en' ? '⛶ Enter Fullscreen [F]' : '⛶ Masuk Layar Penuh (Fullscreen) [F]');
+    settingsBtn.classList.toggle('active', isFs);
+  }
+}
+
+document.addEventListener('fullscreenchange', updateFullscreenUI);
+document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+document.addEventListener('mozfullscreenchange', updateFullscreenUI);
+document.addEventListener('MSFullscreenChange', updateFullscreenUI);
+
 // Start New Game
 function startNewGame() {
   gameState = {
@@ -7208,6 +7391,7 @@ function startNewGame() {
   initProceduralRain();
   document.getElementById('main-menu-screen').classList.add('hidden');
   switchView('game');
+  enterFullscreen();
   updateChapterNavigationUI();
   updateEvidenceInventory();
   updateFocusBar();
@@ -7246,6 +7430,7 @@ let isAutoPlay = false;
 let autoPlayTimer = null;
 
 function continueGame() {
+  enterFullscreen();
   loadLatestSaveOrContinue();
 }
 
@@ -7503,6 +7688,9 @@ window.addEventListener('keydown', (e) => {
   } else if ((e.key === 'd' || e.key === 'D' || e.key === 'Tab') && !isInput && !activeModal) {
     e.preventDefault();
     toggleDossierDrawer();
+  } else if ((e.key === 'f' || e.key === 'F' || e.key === 'F11') && !isInput && !activeModal) {
+    e.preventDefault();
+    toggleFullscreen();
   } else if ((e.key === 'l' || e.key === 'L') && !isInput && !activeModal) {
     openBacklogModal();
   } else if (e.key >= '1' && e.key <= '4' && !isInput && !activeModal) {

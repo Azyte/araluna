@@ -1691,6 +1691,107 @@ function applyLanguage() {
   }
 }
 
+
+// ==========================================
+// HTML5 FULLSCREEN API & IMMERSIVE DISPLAY
+// ==========================================
+function isFullscreenActive() {
+  return !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  );
+}
+
+function enterFullscreen() {
+  const el = document.documentElement;
+  try {
+    if (!isFullscreenActive()) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else if (el.mozRequestFullScreen) {
+        el.mozRequestFullScreen();
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
+      }
+    }
+  } catch (err) {
+    // Graceful fallback
+  }
+}
+
+function exitFullscreen() {
+  try {
+    if (isFullscreenActive()) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  } catch (err) {
+    // Graceful fallback
+  }
+}
+
+function toggleFullscreen() {
+  if (isFullscreenActive()) {
+    exitFullscreen();
+  } else {
+    enterFullscreen();
+  }
+}
+
+function updateFullscreenUI() {
+  const isFs = isFullscreenActive();
+  document.body.classList.toggle('is-fullscreen-mode', isFs);
+
+  // Update Ren'Py quick bar button
+  const quickBtn = document.getElementById('btn-quick-fullscreen');
+  if (quickBtn) {
+    const icon = quickBtn.querySelector('.fs-icon');
+    const text = quickBtn.querySelector('.fs-text');
+    if (icon) icon.textContent = isFs ? '🗗' : '⛶';
+    if (text) text.textContent = isFs ? 'WINDOW' : 'FULL';
+  }
+
+  // Update floating button
+  const floatBtn = document.getElementById('floating-fullscreen-btn');
+  if (floatBtn) {
+    const floatIcon = floatBtn.querySelector('.fs-float-icon');
+    const floatText = floatBtn.querySelector('.fs-float-label');
+    if (floatIcon) floatIcon.textContent = isFs ? '🗗' : '⛶';
+    if (floatText) floatText.textContent = isFs ? 'WINDOW' : 'FULLSCREEN';
+  }
+
+  // Update main menu indicator
+  const menuFsInd = document.getElementById('btn-menu-fs-indicator');
+  if (menuFsInd) {
+    menuFsInd.textContent = isFs ? 'ON' : 'OFF';
+  }
+
+  // Update settings modal toggle
+  const settingsBtn = document.getElementById('btn-set-fullscreen-toggle');
+  if (settingsBtn) {
+    settingsBtn.textContent = isFs 
+      ? (currentLang === 'en' ? '🗗 Exit Fullscreen (Windowed)' : '🗗 Keluar Fullscreen (Mode Jendela)')
+      : (currentLang === 'en' ? '⛶ Enter Fullscreen [F]' : '⛶ Masuk Layar Penuh (Fullscreen) [F]');
+    settingsBtn.classList.toggle('active', isFs);
+  }
+}
+
+document.addEventListener('fullscreenchange', updateFullscreenUI);
+document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+document.addEventListener('mozfullscreenchange', updateFullscreenUI);
+document.addEventListener('MSFullscreenChange', updateFullscreenUI);
+
 // Start New Game
 function startNewGame() {
   gameState = {
@@ -1710,6 +1811,7 @@ function startNewGame() {
   initProceduralRain();
   document.getElementById('main-menu-screen').classList.add('hidden');
   switchView('game');
+  enterFullscreen();
   updateChapterNavigationUI();
   updateEvidenceInventory();
   updateFocusBar();
@@ -1748,6 +1850,7 @@ let isAutoPlay = false;
 let autoPlayTimer = null;
 
 function continueGame() {
+  enterFullscreen();
   loadLatestSaveOrContinue();
 }
 
@@ -2005,6 +2108,9 @@ window.addEventListener('keydown', (e) => {
   } else if ((e.key === 'd' || e.key === 'D' || e.key === 'Tab') && !isInput && !activeModal) {
     e.preventDefault();
     toggleDossierDrawer();
+  } else if ((e.key === 'f' || e.key === 'F' || e.key === 'F11') && !isInput && !activeModal) {
+    e.preventDefault();
+    toggleFullscreen();
   } else if ((e.key === 'l' || e.key === 'L') && !isInput && !activeModal) {
     openBacklogModal();
   } else if (e.key >= '1' && e.key <= '4' && !isInput && !activeModal) {
