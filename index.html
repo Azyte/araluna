@@ -57,8 +57,8 @@
     #main-menu-screen {
       position: fixed;
       inset: 0;
-      background: linear-gradient(rgba(6, 8, 12, 0.65), rgba(6, 8, 12, 0.95)),
-                  radial-gradient(ellipse at center, #151e2c 0%, #06080c 100%);
+      background: linear-gradient(rgba(6, 8, 12, 0.72), rgba(6, 8, 12, 0.94)),
+                  url('assets/bg_pier.jpg') center/cover no-repeat;
       z-index: 500;
       display: flex;
       flex-direction: column;
@@ -308,15 +308,31 @@
     }
 
     .scene-viewport {
-      height: 380px;
-      background: linear-gradient(rgba(6, 8, 12, 0.4), rgba(6, 8, 12, 0.88)),
-                  radial-gradient(ellipse at center, #182333 0%, #090c12 100%);
+      height: 520px;
+      min-height: 460px;
+      background-color: #060910;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       position: relative;
       overflow: hidden;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: flex-end;
       justify-content: center;
+      transition: background-image 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Cinematic Noir Vignette & Ground Mist */
+    .scene-viewport::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, transparent 40%, rgba(6, 8, 12, 0.75) 100%),
+                  linear-gradient(to top, rgba(6, 8, 12, 0.95) 0%, rgba(6, 8, 12, 0.4) 30%, transparent 70%);
+      pointer-events: none;
+      z-index: 2;
     }
 
     /* Procedural Rain on Canvas */
@@ -326,6 +342,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      z-index: 3;
     }
 
     /* Scene Ambience Badge */
@@ -334,42 +351,49 @@
       top: 1rem;
       left: 1rem;
       font-family: 'Courier Prime', monospace;
-      font-size: 0.75rem;
-      background: rgba(9, 12, 18, 0.88);
+      font-size: 0.8rem;
+      background: rgba(9, 12, 18, 0.92);
       border-left: 3px solid var(--gold);
-      padding: 0.35rem 0.75rem;
-      border-radius: 0 4px 4px 0;
-      color: var(--text-main);
-      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(212, 175, 55, 0.3);
+      border-right: 1px solid rgba(212, 175, 55, 0.3);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 0.45rem 0.9rem;
+      border-radius: 0 6px 6px 0;
+      color: var(--gold-light);
+      backdrop-filter: blur(12px);
       z-index: 10;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
     }
 
     .hotspot-mode-btn {
       position: absolute;
       top: 1rem;
       right: 1rem;
-      background: rgba(197, 155, 39, 0.2);
+      background: rgba(197, 155, 39, 0.25);
       border: 1px solid var(--gold);
       color: var(--gold-light);
-      padding: 0.4rem 0.8rem;
+      padding: 0.45rem 0.9rem;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      backdrop-filter: blur(8px);
+      gap: 0.45rem;
+      backdrop-filter: blur(12px);
       z-index: 10;
-      transition: all 0.2s;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     .hotspot-mode-btn:hover {
-      background: rgba(197, 155, 39, 0.4);
-      transform: scale(1.03);
+      background: rgba(197, 155, 39, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
     }
 
-    /* Character Avatars & Expression */
+    /* Character Visual Stage (Seamless Atmospheric Blending) */
     .speaker-display {
       display: flex;
       align-items: flex-end;
@@ -378,39 +402,46 @@
       width: 100%;
       position: relative;
       z-index: 5;
+      pointer-events: none;
     }
 
-    .character-silhouette {
-      width: 200px;
-      height: 310px;
+    .character-stage-portrait {
+      width: 320px;
+      height: 480px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      transition: transform 0.3s ease, filter 0.3s ease;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
-    }
-
-    .character-avatar-circle {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      border: 3px solid var(--gold);
-      background: #171f2e;
-      display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      font-size: 3.5rem;
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
-      margin-bottom: 0.5rem;
+      position: relative;
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      animation: noirBreath 4.5s ease-in-out infinite alternate;
+      /* Seamless blend into background with linear gradient fade mask */
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 96%);
+      filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 12px rgba(212, 175, 55, 0.22));
+      opacity: 0.94;
     }
 
-    .character-body-shape {
-      width: 170px;
-      height: 140px;
-      background: linear-gradient(180deg, #1a2333 0%, #0b0f17 100%);
-      border-radius: 80px 80px 0 0;
-      border-top: 2px solid rgba(212, 175, 55, 0.4);
+    .character-stage-portrait img,
+    .character-stage-portrait svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom center;
+      filter: contrast(1.08) brightness(0.96);
+    }
+
+    .character-stage-portrait.fade-in {
+      animation: charSlideFade 0.45s ease-out forwards, noirBreath 4.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes noirBreath {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-5px) scale(1.01); }
+    }
+
+    @keyframes charSlideFade {
+      0% { opacity: 0; transform: translateY(14px) scale(0.98); }
+      100% { opacity: 0.94; transform: translateY(0) scale(1); }
     }
 
     /* Crime Scene Hotspots Overlay */
@@ -470,76 +501,117 @@
       50% { box-shadow: 0 0 0 12px rgba(212, 175, 55, 0); }
     }
 
-    /* Dialogue Panel */
+    /* Dialogue Panel (Glassmorphism & High-Readability Noir) */
     .dialogue-box {
-      padding: 1.5rem;
-      background: var(--bg-surface);
+      padding: 1.75rem 2rem;
+      background: rgba(12, 16, 24, 0.94);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(212, 175, 55, 0.35);
       position: relative;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.7);
     }
 
     .speaker-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.9rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .speaker-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .speaker-mini-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      background: #121824;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+      flex-shrink: 0;
+    }
+
+    .speaker-mini-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
     }
 
     .speaker-name {
       font-family: 'Cinzel', serif;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       font-weight: 700;
       color: var(--gold);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      letter-spacing: 1px;
+      text-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
     }
 
     .speaker-role {
       font-family: 'Courier Prime', monospace;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      background: rgba(255,255,255,0.06);
-      padding: 2px 8px;
+      font-size: 0.76rem;
+      color: var(--gold-light);
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      padding: 3px 10px;
       border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .dialogue-text {
-      font-size: 1.05rem;
-      color: var(--text-main);
-      min-height: 85px;
-      line-height: 1.7;
+      font-size: 1.12rem;
+      color: #f1f5f9;
+      min-height: 90px;
+      line-height: 1.85;
+      font-weight: 400;
       white-space: pre-line;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      user-select: text;
     }
 
     .choice-container {
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.75rem;
       margin-top: 1rem;
     }
 
     .choice-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-left: 3px solid var(--gold);
-      color: var(--text-main);
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
+      background: linear-gradient(90deg, rgba(25, 33, 48, 0.95) 0%, rgba(15, 20, 30, 0.85) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-left: 4px solid var(--gold);
+      color: #e2e8f0;
+      padding: 0.9rem 1.25rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
       text-align: left;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
 
     .choice-btn:hover {
-      background: var(--bg-card-hover);
+      background: linear-gradient(90deg, rgba(38, 50, 72, 0.98) 0%, rgba(22, 30, 44, 0.9) 100%);
       border-color: var(--gold);
-      padding-left: 1.25rem;
+      padding-left: 1.6rem;
       color: #fff;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+      transform: translateX(4px);
     }
 
     .dialogue-controls {
@@ -1571,9 +1643,12 @@
       <button class="quick-icon-btn" onclick="openSettingsModal()">
         <span>⚙️</span>
       </button>
-      <button class="quick-icon-btn" id="audio-btn" onclick="toggleAudioEngine()">
-        <span id="audio-icon">🔇</span>
-      </button>
+      <div style="display:inline-flex;align-items:center;gap:0.4rem;background:#19202d;border:1px solid #293448;padding:0.3rem 0.6rem;border-radius:6px;">
+        <button style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:0.9rem;" id="audio-btn" onclick="toggleAudioEngine()" title="Mute/Unmute Audio">
+          <span id="audio-icon">🔊</span>
+        </button>
+        <input type="range" id="master-volume-slider" min="0" max="1" step="0.05" value="0.75" oninput="setMasterVolume(this.value)" title="Volume Audio" style="width:65px;accent-color:var(--gold);cursor:pointer;" />
+      </div>
       <button class="quick-icon-btn" onclick="returnToMainMenu()" title="Kembali ke Menu Utama">
         <span>🏠</span>
       </button>
@@ -1619,11 +1694,10 @@
               </div>
             </div>
 
-            <!-- Speaker Visual Stage -->
+            <!-- Speaker Visual Stage (Seamless Atmospheric Blending) -->
             <div class="speaker-display">
-              <div class="character-silhouette" id="character-visual">
-                <div class="character-avatar-circle" id="speaker-avatar-icon">🕵️</div>
-                <div class="character-body-shape"></div>
+              <div class="character-stage-portrait" id="character-visual">
+                <img src="assets/characters/arun.svg" alt="Detektif Arun" class="character-portrait-img" id="character-portrait-img" />
               </div>
             </div>
           </div>
@@ -1631,7 +1705,12 @@
           <!-- Dialogue Area -->
           <div class="dialogue-box">
             <div class="speaker-meta">
-              <div class="speaker-name" id="speaker-name">Arun</div>
+              <div class="speaker-badge-wrap">
+                <div class="speaker-mini-avatar" id="speaker-avatar-icon">
+                  <img src="assets/characters/arun.svg" alt="Arun" />
+                </div>
+                <div class="speaker-name" id="speaker-name">Arun</div>
+              </div>
               <div class="speaker-role" id="speaker-role">Detektif Unit Khusus Araluna</div>
             </div>
             <div class="dialogue-text" id="dialogue-text">
@@ -1699,28 +1778,8 @@
             <div class="widget-header">
               <span id="txt-suspects-title">TERDUGA & SAKSI</span>
             </div>
-            <div id="suspects-list-container">
-              <div class="suspect-item" onclick="interrogateSuspect('bianca')">
-                <div class="suspect-avatar-mini">B</div>
-                <div>
-                  <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">Bianca Baskara</div>
-                  <div style="font-size: 0.75rem; color: var(--text-muted);" id="role-bianca">Keponakan / Ahli Waris Tunggal</div>
-                </div>
-              </div>
-              <div class="suspect-item" onclick="interrogateSuspect('viktor')">
-                <div class="suspect-avatar-mini">V</div>
-                <div>
-                  <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">Viktor Sani</div>
-                  <div style="font-size: 0.75rem; color: var(--text-muted);" id="role-viktor">Notaris Pribadi Korban</div>
-                </div>
-              </div>
-              <div class="suspect-item" onclick="interrogateSuspect('gino')">
-                <div class="suspect-avatar-mini">G</div>
-                <div>
-                  <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">Gino Ward</div>
-                  <div style="font-size: 0.75rem; color: var(--text-muted);" id="role-gino">Penjaga Gerbang Menara Jam</div>
-                </div>
-              </div>
+            <div id="suspects-list-container" class="suspects-list-box">
+              <!-- Populated dynamically by renderSidebarSuspects() with Araluna cast -->
             </div>
           </div>
         </div>
@@ -4893,24 +4952,53 @@ let gameState = {
 };
 
 // ==========================================
-// PROCEDURAL WEB AUDIO ENGINE
+// ADVANCED PROCEDURAL NOIR AUDIO ENGINE
 // ==========================================
 let audioCtx = null;
 let isAudioMuted = false;
+let masterVolume = 0.75;
+let masterGainNode = null;
 let rainGainNode = null;
 let rainSourceNode = null;
+let bgmTimer = null;
+let thunderTimer = null;
+let isAudioInitialized = false;
+
+// 6 Melancholic Noir Jazz Chords (Fm9, Bbm7, Eb7, Abmaj7, Dbmaj7, C7alt)
+const JAZZ_CHORDS = [
+  [87.31, 130.81, 207.65, 311.13, 392.00],
+  [58.27, 87.31, 138.59, 207.65, 261.63],
+  [77.78, 116.54, 196.00, 277.18, 349.23],
+  [51.91, 77.78, 130.81, 196.00, 233.08],
+  [69.30, 103.83, 174.61, 261.63, 311.13],
+  [65.41, 98.00, 164.81, 233.08, 311.13]
+];
+let currentChordIdx = 0;
 
 function getAudioContext() {
   if (!audioCtx) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (AudioContext) {
       audioCtx = new AudioContext();
+      masterGainNode = audioCtx.createGain();
+      masterGainNode.gain.setValueAtTime(isAudioMuted ? 0 : masterVolume, audioCtx.currentTime);
+      masterGainNode.connect(audioCtx.destination);
     }
   }
   if (audioCtx && audioCtx.state === 'suspended') {
     audioCtx.resume();
   }
   return audioCtx;
+}
+
+function initAudioEngine() {
+  if (isAudioInitialized) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  isAudioInitialized = true;
+  initProceduralRain();
+  startNoirBgm();
+  scheduleDistantThunder();
 }
 
 function initProceduralRain() {
@@ -4930,7 +5018,7 @@ function initProceduralRain() {
     b3 = 0.86650 * b3 + white * 0.3104856;
     b4 = 0.55000 * b4 + white * 0.5329522;
     b5 = -0.7616 * b5 - white * 0.0168980;
-    output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
+    output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.038;
     b6 = white * 0.115926;
   }
 
@@ -4940,97 +5028,193 @@ function initProceduralRain() {
 
   const filter = ctx.createBiquadFilter();
   filter.type = 'lowpass';
-  filter.frequency.value = 850;
+  filter.frequency.value = 820;
 
   rainGainNode = ctx.createGain();
-  rainGainNode.gain.value = isAudioMuted ? 0 : 0.22;
+  rainGainNode.gain.value = isAudioMuted ? 0 : 0.18;
 
   rainSourceNode.connect(filter);
   filter.connect(rainGainNode);
-  rainGainNode.connect(ctx.destination);
+  rainGainNode.connect(masterGainNode);
   rainSourceNode.start();
+}
+
+function playNextJazzChord() {
+  if (isAudioMuted) return;
+  const ctx = getAudioContext();
+  if (!ctx || !masterGainNode) return;
+
+  const chord = JAZZ_CHORDS[currentChordIdx];
+  currentChordIdx = (currentChordIdx + 1) % JAZZ_CHORDS.length;
+
+  const now = ctx.currentTime;
+  const chordGain = ctx.createGain();
+  chordGain.gain.setValueAtTime(0.0001, now);
+  chordGain.gain.exponentialRampToValueAtTime(0.055, now + 1.2);
+  chordGain.gain.exponentialRampToValueAtTime(0.0001, now + 4.9);
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 720;
+
+  chord.forEach((freq, idx) => {
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    osc1.type = 'triangle';
+    osc2.type = 'sine';
+
+    const detune = (Math.random() - 0.5) * 5;
+    osc1.frequency.setValueAtTime(freq, now + idx * 0.035);
+    osc2.frequency.setValueAtTime(freq + detune, now + idx * 0.035);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+
+    osc1.start(now + idx * 0.035);
+    osc2.start(now + idx * 0.035);
+    osc1.stop(now + 5.0);
+    osc2.stop(now + 5.0);
+  });
+
+  filter.connect(chordGain);
+  chordGain.connect(masterGainNode);
+}
+
+function startNoirBgm() {
+  if (bgmTimer) return;
+  playNextJazzChord();
+  bgmTimer = setInterval(playNextJazzChord, 4800);
+}
+
+function scheduleDistantThunder() {
+  if (thunderTimer) clearTimeout(thunderTimer);
+  const nextThunderDelay = 35000 + Math.random() * 30000;
+  thunderTimer = setTimeout(() => {
+    triggerDistantThunder();
+    scheduleDistantThunder();
+  }, nextThunderDelay);
+}
+
+function triggerDistantThunder() {
+  if (isAudioMuted) return;
+  const ctx = getAudioContext();
+  if (!ctx || !masterGainNode) return;
+
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(55, now);
+  osc.frequency.exponentialRampToValueAtTime(32, now + 2.8);
+
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(140, now);
+  filter.frequency.exponentialRampToValueAtTime(60, now + 3.0);
+
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.exponentialRampToValueAtTime(0.08, now + 0.9);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.2);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(masterGainNode);
+
+  osc.start(now);
+  osc.stop(now + 3.3);
 }
 
 function playSound(type) {
   if (isAudioMuted) return;
   const ctx = getAudioContext();
-  if (!ctx) return;
+  if (!ctx || !masterGainNode) return;
 
   const now = ctx.currentTime;
 
   if (type === 'type') {
-    // Soft mechanical typewriter click
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'triangle';
-    osc.frequency.setValueAtTime(450 + Math.random() * 120, now);
-    gain.gain.setValueAtTime(0.03, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+    osc.frequency.setValueAtTime(380 + Math.random() * 180, now);
+    gain.gain.setValueAtTime(0.025, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.038);
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(masterGainNode);
     osc.start(now);
-    osc.stop(now + 0.05);
+    osc.stop(now + 0.045);
   } else if (type === 'chime') {
-    // Elegant bell chime for clue discovery
     [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now + idx * 0.09);
-      gain.gain.setValueAtTime(0.12, now + idx * 0.09);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.09 + 0.6);
+      osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+      gain.gain.setValueAtTime(0.1, now + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.65);
       osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now + idx * 0.09);
-      osc.stop(now + idx * 0.09 + 0.7);
+      gain.connect(masterGainNode);
+      osc.start(now + idx * 0.08);
+      osc.stop(now + idx * 0.08 + 0.7);
     });
   } else if (type === 'sting') {
-    // Dramatic mystery hit chord
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(130.81, now);
-    osc.frequency.exponentialRampToValueAtTime(65.41, now + 0.4);
-    gain.gain.setValueAtTime(0.2, now);
+    osc.frequency.exponentialRampToValueAtTime(65.41, now + 0.45);
+    gain.gain.setValueAtTime(0.18, now);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(masterGainNode);
     osc.start(now);
     osc.stop(now + 0.55);
   } else if (type === 'heartbeat') {
-    // Tense dual-pulse heartbeat
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(55, now);
-    gain.gain.setValueAtTime(0.25, now);
+    osc.frequency.setValueAtTime(52, now);
+    gain.gain.setValueAtTime(0.22, now);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(masterGainNode);
     osc.start(now);
     osc.stop(now + 0.15);
 
     const osc2 = ctx.createOscillator();
     const gain2 = ctx.createGain();
     osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(48, now + 0.18);
-    gain2.gain.setValueAtTime(0.2, now + 0.18);
-    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+    osc2.frequency.setValueAtTime(46, now + 0.16);
+    gain2.gain.setValueAtTime(0.18, now + 0.16);
+    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
     osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    osc2.start(now + 0.18);
-    osc2.stop(now + 0.35);
+    gain2.connect(masterGainNode);
+    osc2.start(now + 0.16);
+    osc2.stop(now + 0.33);
   }
 }
 
-function toggleAudio() {
-  isAudioMuted = !isAudioMuted;
-  const icon = document.getElementById('audio-icon');
-  if (rainGainNode) {
-    rainGainNode.gain.value = isAudioMuted ? 0 : 0.22;
+function setMasterVolume(val) {
+  masterVolume = parseFloat(val);
+  const ctx = getAudioContext();
+  if (masterGainNode && ctx) {
+    masterGainNode.gain.setValueAtTime(isAudioMuted ? 0 : masterVolume, ctx.currentTime);
   }
+}
+
+function toggleAudioEngine() {
+  initAudioEngine();
+  isAudioMuted = !isAudioMuted;
+  const ctx = getAudioContext();
+  if (masterGainNode && ctx) {
+    masterGainNode.gain.setValueAtTime(isAudioMuted ? 0 : masterVolume, ctx.currentTime);
+  }
+  const icon = document.getElementById('audio-icon');
   if (icon) icon.textContent = isAudioMuted ? '🔇' : '🔊';
   showToast(isAudioMuted ? 'Audio Dimatikan' : 'Audio Diaktifkan');
+}
+
+function toggleAudio() {
+  toggleAudioEngine();
 }
 
 // ==========================================
@@ -5196,28 +5380,119 @@ function goToStoryNode(nodeId) {
   }
 }
 
+const CHAPTER_BG_MAP = {
+  1: 'assets/bg_pier.jpg',
+  2: 'assets/bg_precinct.jpg',
+  3: 'assets/bg_archive.jpg',
+  4: 'assets/bg_lighthouse.svg'
+};
+
+const CHAR_SVG_MAP = {
+  'arun': 'assets/characters/arun.svg',
+  'vela': 'assets/characters/vela.svg',
+  'mira': 'assets/characters/mira.svg',
+  'brama': 'assets/characters/brama.svg',
+  'sena': 'assets/characters/sena.svg',
+  'reyn': 'assets/characters/reyn.svg',
+  'archivist': 'assets/characters/archivist.svg'
+};
+
+function updateSceneBackground(chapter, customBg) {
+  const viewport = document.getElementById('scene-viewport');
+  if (!viewport) return;
+  const bg = customBg || CHAPTER_BG_MAP[chapter] || 'assets/bg_pier.jpg';
+  viewport.style.backgroundImage = `url('${bg}')`;
+}
+
+function updateCharacterStage(speakerKey) {
+  const charVisual = document.getElementById('character-visual');
+  const avatarIcon = document.getElementById('speaker-avatar-icon');
+  const key = (speakerKey || '').toLowerCase().trim();
+  const svgPath = CHAR_SVG_MAP[key];
+
+  if (charVisual) {
+    if (svgPath) {
+      charVisual.style.display = 'flex';
+      charVisual.style.opacity = '0.94';
+      charVisual.innerHTML = `<img src="${svgPath}" alt="${key}" class="character-portrait-img" />`;
+      charVisual.classList.remove('fade-in');
+      void charVisual.offsetWidth;
+      charVisual.classList.add('fade-in');
+    } else {
+      charVisual.style.opacity = '0';
+      setTimeout(() => {
+        if (charVisual.style.opacity === '0') {
+          charVisual.style.display = 'none';
+        }
+      }, 350);
+    }
+  }
+
+  if (avatarIcon) {
+    if (svgPath) {
+      avatarIcon.innerHTML = `<img src="${svgPath}" alt="${key}" style="width:100%;height:100%;object-fit:cover;object-position:top center;" />`;
+    } else {
+      avatarIcon.innerHTML = `<span style="font-size:1.1rem;color:var(--gold);">⚖️</span>`;
+    }
+  }
+}
+
+function renderSidebarSuspects() {
+  const container = document.getElementById('suspects-list-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const castKeys = ['vela', 'mira', 'brama', 'sena', 'reyn', 'archivist'];
+  castKeys.forEach(k => {
+    const s = SUSPECTS_DATA[k];
+    if (!s) return;
+    const svgPath = CHAR_SVG_MAP[k] || 'assets/characters/arun.svg';
+    const roleText = s.role[currentLang] || s.role['id'];
+
+    const item = document.createElement('div');
+    item.className = 'suspect-item';
+    item.onclick = () => openSuspectDossier(k);
+    item.innerHTML = `
+      <div class="suspect-avatar-mini">
+        <img src="${svgPath}" alt="${s.name}" />
+      </div>
+      <div style="overflow:hidden;flex:1;">
+        <div style="font-size:0.86rem;font-weight:600;color:#fff;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">${s.name}</div>
+        <div style="font-size:0.72rem;color:var(--gold-light);opacity:0.85;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">${roleText}</div>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+function openSuspectDossier(suspectId) {
+  const s = SUSPECTS_DATA[suspectId];
+  if (!s) return;
+  playSound('type');
+  const role = s.role[currentLang] || s.role['id'];
+  showToast(`${s.name} • ${role}`);
+}
+
 function renderStoryNode(node, skipTyping = false) {
   const speakerEl = document.getElementById('speaker-name');
   const roleEl = document.getElementById('speaker-role');
   const textEl = document.getElementById('dialogue-text');
   const choiceContainer = document.getElementById('choice-container');
-  const avatarIcon = document.getElementById('speaker-avatar-icon');
-  const charVisual = document.getElementById('character-visual');
 
   const charInfo = SUSPECTS_DATA[node.speaker] || {
-    name: node.speaker,
-    role: { id: "Saksi", en: "Witness", id_gaul: "Saksi" },
-    avatar: "👤"
+    name: node.speaker || "Narasi",
+    role: { id: "Penyelidikan", en: "Observation", id_gaul: "Pengamatan" },
+    avatar: "🕵️"
   };
 
-  speakerEl.textContent = charInfo.name;
-  roleEl.textContent = charInfo.role[currentLang] || charInfo.role['id'];
-  avatarIcon.textContent = charInfo.avatar;
+  if (speakerEl) speakerEl.textContent = charInfo.name;
+  if (roleEl) roleEl.textContent = charInfo.role[currentLang] || charInfo.role['id'];
 
-  // Visual portrait update
-  if (charVisual) {
-    charVisual.textContent = charInfo.avatar;
-  }
+  // 1. Update Chapter & Scene Background
+  updateSceneBackground(gameState.chapter, node.background);
+
+  // 2. Update Character Visual on Stage & Mini Avatar
+  updateCharacterStage(node.speaker || node.charVisual);
 
   const rawText = node.text[currentLang] || node.text['id'];
   choiceContainer.innerHTML = '';
@@ -6432,6 +6707,17 @@ window.addEventListener('DOMContentLoaded', () => {
   renderCaseLibrary();
   initRainCanvas('menu-rain-canvas');
   initRainCanvas('rain-canvas');
+
+  // Trigger procedural audio on first interaction (respects browser policy)
+  const triggerAudio = () => {
+    initAudioEngine();
+    window.removeEventListener('click', triggerAudio);
+    window.removeEventListener('keydown', triggerAudio);
+    window.removeEventListener('touchstart', triggerAudio);
+  };
+  window.addEventListener('click', triggerAudio, { once: true });
+  window.addEventListener('keydown', triggerAudio, { once: true });
+  window.addEventListener('touchstart', triggerAudio, { once: true });
 });
 
 

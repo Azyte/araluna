@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#060913"/><stop offset="50%" stop-color="#0c1322"/><stop offset="100%" stop-color="#141d2f"/></linearGradient>
+    <radialGradient id="lightBeam" cx="72%" cy="28%" r="70%" fx="72%" fy="28%"><stop offset="0%" stop-color="#fef08a" stop-opacity="0.95"/><stop offset="25%" stop-color="#f59e0b" stop-opacity="0.6"/><stop offset="55%" stop-color="#38bdf8" stop-opacity="0.2"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <linearGradient id="seaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#09111c"/><stop offset="100%" stop-color="#03060a"/></linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#skyGrad)"/>
+  <path d="M0 200 Q400 120 800 220 T1600 180 T1920 220 L1920 0 L0 0 Z" fill="#04060a" opacity="0.7"/>
+  <path d="M420 50 L380 180 L440 210 L390 380" stroke="#c084fc" stroke-width="3" fill="none" opacity="0.8"/>
+  <path d="M420 50 L380 180 L440 210 L390 380" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.9"/>
+  <rect y="680" width="1920" height="400" fill="url(#seaGrad)"/>
+  <path d="M0 720 Q300 660 600 730 T1200 700 T1920 740 L1920 1080 L0 1080 Z" fill="#0a1526" opacity="0.8"/>
+  <path d="M0 770 Q450 710 900 780 T1800 750 T1920 790 L1920 1080 L0 1080 Z" fill="#060c16" opacity="0.9"/>
+  <polygon points="1150,1080 1250,750 1450,550 1650,700 1920,850 1920,1080" fill="#07090f"/>
+  <polygon points="1350,560 1370,280 1430,280 1450,560" fill="#121824" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+  <rect x="1355" y="270" width="90" height="15" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="1365" y="210" width="70" height="60" fill="#0a0f18" stroke="#f59e0b" stroke-width="2"/>
+  <path d="M1360 210 Q1400 160 1440 210 Z" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+  <polygon points="1400,240 0,100 0,600" fill="url(#lightBeam)"/>
+  <circle cx="1400" cy="240" r="18" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="velaUniform" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e293b" stop-opacity="0.95"/><stop offset="60%" stop-color="#0f172a" stop-opacity="0.85"/><stop offset="100%" stop-color="#020617" stop-opacity="0.2"/></linearGradient>
+    <linearGradient id="rimGoldVela" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#fbbf24" stop-opacity="0.9"/><stop offset="15%" stop-color="#b45309" stop-opacity="0.3"/><stop offset="45%" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="rimBlueVela" x1="1" y1="0" x2="0" y2="0"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.8"/><stop offset="15%" stop-color="#1d4ed8" stop-opacity="0.3"/><stop offset="45%" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="fadeMask" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="1"/><stop offset="55%" stop-color="#fff" stop-opacity="0.95"/><stop offset="80%" stop-color="#fff" stop-opacity="0.45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="charMask"><rect width="400" height="600" fill="url(#fadeMask)"/></mask>
+  </defs>
+  <g mask="url(#charMask)">
+    <path d="M130 180 C115 230, 95 310, 75 480 C65 540, 55 580, 45 600 L355 600 C345 580, 335 540, 325 480 C305 310, 285 230, 270 180 Z" fill="url(#velaUniform)"/>
+    <path d="M140 180 L110 220 L90 320 L160 380 L240 380 L310 320 L290 220 L260 180 Z" fill="#172033" stroke="rgba(96,165,250,0.3)" stroke-width="1.5"/>
+    <path d="M125 195 L165 190 L160 210 L120 210 Z" fill="#d97706" stroke="#fbbf24" stroke-width="1"/>
+    <path d="M275 195 L235 190 L240 210 L280 210 Z" fill="#d97706" stroke="#fbbf24" stroke-width="1"/>
+    <polygon points="150,230 154,242 166,242 156,250 160,262 150,254 140,262 144,250 134,242 146,242" fill="#fbbf24" stroke="#fef08a" stroke-width="1.2"/>
+    <path d="M110 300 C120 370, 180 390, 200 390 C220 390, 280 370, 290 300 C270 330, 220 350, 200 350 C180 350, 130 330, 110 300 Z" fill="#0f172a" stroke="rgba(251,191,36,0.5)" stroke-width="1.5"/>
+    <path d="M165 125 C165 165, 178 190, 200 190 C222 190, 235 165, 235 125 C235 95, 165 95, 165 125 Z" fill="#243044"/>
+    <path d="M160 115 C160 65, 240 65, 240 115 C240 85, 230 75, 200 75 C170 75, 160 85, 160 115 Z" fill="#090d16"/>
+    <circle cx="200" cy="65" r="22" fill="#090d16" stroke="rgba(251,191,36,0.4)" stroke-width="1.5"/>
+    <line x1="180" y1="125" x2="192" y2="124" stroke="#93c5fd" stroke-width="2"/>
+    <line x1="208" y1="124" x2="220" y2="125" stroke="#93c5fd" stroke-width="2"/>
+    <path d="M110 220 C100 280, 80 380, 75 480 C65 540, 55 580, 45 600 L75 600 C85 550, 100 480, 115 380 Z" fill="url(#rimGoldVela)"/>
+    <path d="M290 220 C300 280, 320 380, 325 480 C335 540, 345 580, 355 600 L325 600 C315 550, 300 480, 285 380 Z" fill="url(#rimBlueVela)"/>
+  </g>
+</svg>

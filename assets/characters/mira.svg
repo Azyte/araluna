@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="miraGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#334155" stop-opacity="0.95"/><stop offset="60%" stop-color="#1e293b" stop-opacity="0.85"/><stop offset="100%" stop-color="#020617" stop-opacity="0.2"/></linearGradient>
+    <linearGradient id="rimAmberMira" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f97316" stop-opacity="0.85"/><stop offset="15%" stop-color="#c2410c" stop-opacity="0.3"/><stop offset="45%" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="rimCyanMira" x1="1" y1="0" x2="0" y2="0"><stop offset="0%" stop-color="#22d3ee" stop-opacity="0.85"/><stop offset="15%" stop-color="#0891b2" stop-opacity="0.3"/><stop offset="45%" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="fadeMask" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="1"/><stop offset="55%" stop-color="#fff" stop-opacity="0.95"/><stop offset="80%" stop-color="#fff" stop-opacity="0.45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="charMask"><rect width="400" height="600" fill="url(#fadeMask)"/></mask>
+  </defs>
+  <g mask="url(#charMask)">
+    <path d="M140 180 C125 240, 105 320, 85 480 C75 540, 65 580, 55 600 L345 600 C335 580, 325 540, 315 480 C295 320, 275 240, 260 180 Z" fill="url(#miraGrad)"/>
+    <path d="M150 180 L125 230 L170 330 L230 330 L275 230 L250 180 Z" fill="#1e293b" stroke="rgba(249,115,22,0.4)" stroke-width="1.5"/>
+    <line x1="130" y1="200" x2="260" y2="380" stroke="#0f172a" stroke-width="7"/>
+    <line x1="130" y1="200" x2="260" y2="380" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6,4"/>
+    <rect x="140" y="340" width="45" height="60" rx="3" fill="#fef08a" stroke="#d97706" stroke-width="1.5" transform="rotate(-10 160 370)"/>
+    <line x1="145" y1="355" x2="175" y2="350" stroke="#0f172a" stroke-width="1.5"/>
+    <line x1="145" y1="365" x2="175" y2="360" stroke="#0f172a" stroke-width="1.5"/>
+    <path d="M170 125 C170 165, 180 185, 200 185 C220 185, 230 165, 230 125 C230 95, 170 95, 170 125 Z" fill="#2d3748"/>
+    <path d="M160 100 C150 140, 135 190, 150 210 C160 170, 170 130, 180 100 Z" fill="#0f172a"/>
+    <path d="M240 100 C255 140, 270 190, 255 210 C240 170, 230 130, 220 100 Z" fill="#0f172a"/>
+    <path d="M165 95 C165 50, 235 50, 235 95 C220 80, 180 80, 165 95 Z" fill="#0f172a"/>
+    <ellipse cx="185" cy="120" rx="3.5" ry="2" fill="#38bdf8"/>
+    <ellipse cx="215" cy="120" rx="3.5" ry="2" fill="#38bdf8"/>
+    <path d="M125 230 C110 320, 95 400, 85 480 L110 480 C120 400, 135 320, 145 230 Z" fill="url(#rimAmberMira)"/>
+    <path d="M275 230 C290 320, 305 400, 315 480 L290 480 C280 400, 265 320, 255 230 Z" fill="url(#rimCyanMira)"/>
+  </g>
+</svg>

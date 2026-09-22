@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="cloakGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#18181b" stop-opacity="0.95"/><stop offset="60%" stop-color="#09090b" stop-opacity="0.85"/><stop offset="100%" stop-color="#000" stop-opacity="0.1"/></linearGradient>
+    <linearGradient id="rimGoldArch" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.9"/><stop offset="15%" stop-color="#b45309" stop-opacity="0.3"/><stop offset="45%" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="rimVioletArch" x1="1" y1="0" x2="0" y2="0"><stop offset="0%" stop-color="#c084fc" stop-opacity="0.85"/><stop offset="15%" stop-color="#7e22ce" stop-opacity="0.3"/><stop offset="45%" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="fadeMask" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="1"/><stop offset="55%" stop-color="#fff" stop-opacity="0.95"/><stop offset="80%" stop-color="#fff" stop-opacity="0.45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="charMask"><rect width="400" height="600" fill="url(#fadeMask)"/></mask>
+  </defs>
+  <g mask="url(#charMask)">
+    <path d="M120 160 C90 220, 60 320, 40 480 C30 540, 20 580, 10 600 L390 600 C380 580, 370 540, 360 480 C340 320, 310 220, 280 160 Z" fill="url(#cloakGrad)"/>
+    <path d="M110 170 L140 260 L180 340 L220 340 L260 260 L290 170 Z" fill="#09090b" stroke="rgba(245,158,11,0.5)" stroke-width="2"/>
+    <circle cx="200" cy="350" r="26" fill="#1c1917" stroke="#fbbf24" stroke-width="2.5"/>
+    <circle cx="200" cy="350" r="21" fill="none" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2,2"/>
+    <line x1="200" y1="350" x2="216" y2="350" stroke="#fef08a" stroke-width="2"/>
+    <line x1="200" y1="350" x2="209" y2="338" stroke="#fef08a" stroke-width="2"/>
+    <circle cx="200" cy="350" r="3" fill="#f59e0b"/>
+    <path d="M90 110 C140 85, 260 85, 310 110 C330 118, 280 130, 200 125 C120 130, 70 118, 90 110 Z" fill="#09090b" stroke="rgba(245,158,11,0.6)" stroke-width="2"/>
+    <path d="M140 100 C150 40, 250 40, 260 100 Z" fill="#040405"/>
+    <path d="M165 115 C185 110, 215 110, 235 115 C240 135, 230 155, 200 155 C170 155, 160 135, 165 115 Z" fill="#f8fafc" opacity="0.88" stroke="#fbbf24" stroke-width="1.5"/>
+    <ellipse cx="185" cy="130" rx="4" ry="2" fill="#09090b"/>
+    <circle cx="215" cy="130" r="3" fill="#fbbf24"/>
+    <path d="M60 320 C45 420, 35 520, 30 600 L55 600 C60 520, 70 420, 85 320 Z" fill="url(#rimGoldArch)"/>
+    <path d="M340 320 C355 420, 365 520, 370 600 L345 600 C340 520, 330 420, 315 320 Z" fill="url(#rimVioletArch)"/>
+  </g>
+</svg>
