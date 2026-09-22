@@ -562,11 +562,17 @@ function loadLastCheckpoint() {
 // ==========================================
 // STORY & DIALOGUE RENDERING ENGINE
 // ==========================================
-function goToStoryNode(nodeId) {
+function goToStoryNode(nodeId, skipPushHistory = false) {
   const node = STORY_NODES[nodeId];
   if (!node) {
     console.error('Node not found:', nodeId);
     return;
+  }
+
+  if (!skipPushHistory && gameState.currentNode && gameState.currentNode !== nodeId) {
+    if (!gameState.historyStack) gameState.historyStack = [];
+    gameState.historyStack.push(gameState.currentNode);
+    if (gameState.historyStack.length > 60) gameState.historyStack.shift();
   }
 
   gameState.currentNode = nodeId;
@@ -1524,18 +1530,25 @@ function switchView(viewName) {
   document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
 
   if (viewName === 'game') {
+    document.body.classList.add('in-gameplay');
     document.getElementById('view-game').classList.add('active');
-    document.getElementById('nav-btn-game').classList.add('active');
-  } else if (viewName === 'library') {
-    document.getElementById('view-library').classList.add('active');
-    document.getElementById('nav-btn-library').classList.add('active');
-    renderCaseLibrary();
-  } else if (viewName === 'deduction') {
-    document.getElementById('view-deduction').classList.add('active');
-    document.getElementById('nav-btn-deduction').classList.add('active');
-    renderDeductionTray();
-    updateDeductionSlotsUI();
-    updateDeductionHistory();
+    const navGame = document.getElementById('nav-btn-game');
+    if (navGame) navGame.classList.add('active');
+  } else {
+    document.body.classList.remove('in-gameplay');
+    if (viewName === 'library') {
+      document.getElementById('view-library').classList.add('active');
+      const navLib = document.getElementById('nav-btn-library');
+      if (navLib) navLib.classList.add('active');
+      renderCaseLibrary();
+    } else if (viewName === 'deduction') {
+      document.getElementById('view-deduction').classList.add('active');
+      const navDed = document.getElementById('nav-btn-deduction');
+      if (navDed) navDed.classList.add('active');
+      renderDeductionTray();
+      updateDeductionSlotsUI();
+      updateDeductionHistory();
+    }
   }
 }
 
@@ -1748,6 +1761,7 @@ function confirmResetAllData() {
 }
 
 function returnToMainMenu() {
+  document.body.classList.remove('in-gameplay');
   document.getElementById('main-menu-screen').classList.remove('hidden');
   updateContinueButtonStatus();
 }
@@ -1768,6 +1782,17 @@ function toggleDossierDrawer(forceState) {
     drawer.classList.remove('drawer-open');
     if (backdrop) backdrop.classList.remove('active');
   }
+}
+
+
+function rollbackDialogue() {
+  if (!gameState.historyStack || gameState.historyStack.length === 0) {
+    showToast(currentLang === 'en' ? 'At start of current scene.' : 'Sudah di awal adegan.');
+    return;
+  }
+  const prevNodeId = gameState.historyStack.pop();
+  playSound('type');
+  goToStoryNode(prevNodeId, true);
 }
 
 function skipToNextChoice() {
@@ -1974,6 +1999,9 @@ window.addEventListener('keydown', (e) => {
     if (isDrawerOpen) {
       toggleDossierDrawer(false);
     }
+  } else if ((e.code === 'ArrowLeft' || e.code === 'PageUp') && !isInput && !activeModal && !isDrawerOpen) {
+    e.preventDefault();
+    rollbackDialogue();
   } else if ((e.key === 'd' || e.key === 'D' || e.key === 'Tab') && !isInput && !activeModal) {
     e.preventDefault();
     toggleDossierDrawer();
