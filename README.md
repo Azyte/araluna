@@ -11,7 +11,11 @@
 
 **Sebuah Game Visual Novel Detektif Noir Interaktif Berbasis Web dengan Ensiklopedia Terintegrasi 102 Kasus Pembunuhan Nyata yang Belum Terpecahkan di Dunia.**
 
-[🎮 Mainkan Sekarang](#-quick-start--instalasi) • [📖 Sinopsis](#-sinopsis--latar-cerita) • [⚙️ Arsitektur Teknis](#-arsitektur-teknis-dari-0) • [🧩 Mekanik Game](#-mekanik-game--fitur-utama) • [📂 Database Kasus](#-ensiklopedia-102-kasus-kriminal-dunia) • [🚀 Panduan Deploy](#-panduan-deployment-vercel--github-pages)
+### 🌐 [**>> KLIK UNTUK MAINKAN LANGSUNG (LIVE DEMO) <<**](https://azyte.github.io/araluna/)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAzyte%2Faraluna)
+
+[🎮 Demo Online](https://azyte.github.io/araluna/) • [📖 Sinopsis](#-sinopsis--latar-cerita) • [⚙️ Arsitektur Teknis](#-arsitektur-teknis-dari-0) • [🧩 Mekanik Game](#-mekanik-game--fitur-utama) • [📂 Database Kasus](#-ensiklopedia-102-kasus-kriminal-dunia) • [🚀 Panduan Deploy](#-panduan-deployment-vercel--github-pages)
 
 </div>
 
