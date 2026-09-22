@@ -1,0 +1,26 @@
+{
+  "name": "araluna",
+  "version": "1.0.0",
+  "description": "ARALUNA: Arsip Pembunuhan Tak Terpecahkan - Standalone Detective Mystery Visual Novel with 102 Unsolved Crime Cases Compendium",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "node build_full_engine.cjs",
+    "verify": "node verify_final_game.cjs"
+  },
+  "keywords": [
+    "visual-novel",
+    "detective",
+    "noir",
+    "mystery",
+    "game",
+    "true-crime",
+    "unsolved-cases",
+    "web-audio-api",
+    "html5-canvas",
+    "vanilla-javascript"
+  ],
+  "author": "Azyte",
+  "license": "MIT"
+}
