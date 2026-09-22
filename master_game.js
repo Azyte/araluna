@@ -28,6 +28,10 @@ const I18N = {
     hotspotBtn: "Amati Detail Ruangan",
     hotspotCloseBtn: "Tutup Pengamatan",
     ctrlNext: "Lanjut",
+    ctrlSkip: "Skip",
+    ctrlLog: "Log",
+    ctrlDossier: "Dossier",
+    dossierBtnTxt: "Berkas [D]",
     ctrlQSave: "Simpan Cepat",
     ctrlLoad: "Muat",
     ctrlCheckpoint: "Checkpoint",
@@ -77,6 +81,10 @@ const I18N = {
     hotspotBtn: "Examine Environment",
     hotspotCloseBtn: "End Scene Search",
     ctrlNext: "Proceed",
+    ctrlSkip: "Skip",
+    ctrlLog: "Log",
+    ctrlDossier: "Dossier",
+    dossierBtnTxt: "Dossier [D]",
     ctrlQSave: "Quick Save",
     ctrlLoad: "Load",
     ctrlCheckpoint: "Checkpoint",
@@ -126,6 +134,10 @@ const I18N = {
     hotspotBtn: "Ubek-Ubek Sudut Ruangan",
     hotspotCloseBtn: "Selesai Ngubek",
     ctrlNext: "Lanjut",
+    ctrlSkip: "Skip",
+    ctrlLog: "Log",
+    ctrlDossier: "Berkas",
+    dossierBtnTxt: "Berkas [D]",
     ctrlQSave: "Save Cepet",
     ctrlLoad: "Muat",
     ctrlCheckpoint: "Checkpoint",
@@ -2072,7 +2084,7 @@ function renderSidebarSuspects() {
 
     const item = document.createElement('div');
     item.className = 'suspect-item';
-    item.onclick = () => openSuspectDossier(k);
+    item.onclick = () => interrogateSuspect(k);
     item.innerHTML = `
       <div class="suspect-avatar-mini">
         <img src="${svgPath}" alt="${s.name}" />
@@ -2087,11 +2099,17 @@ function renderSidebarSuspects() {
 }
 
 function openSuspectDossier(suspectId) {
-  const s = SUSPECTS_DATA[suspectId];
-  if (!s) return;
-  playSound('type');
-  const role = s.role[currentLang] || s.role['id'];
-  showToast(`${s.name} • ${role}`);
+  interrogateSuspect(suspectId);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function renderStoryNode(node, skipTyping = false) {
@@ -2118,8 +2136,10 @@ function renderStoryNode(node, skipTyping = false) {
   const rawText = node.text[currentLang] || node.text['id'];
   choiceContainer.innerHTML = '';
 
+  const advanceChevron = ' <span class="renpy-advance-chevron">▼</span>';
+
   if (skipTyping) {
-    textEl.textContent = rawText;
+    textEl.innerHTML = escapeHtml(rawText) + advanceChevron;
     renderChoices(node.choices);
     if (typeof checkAutoPlayNext === 'function') checkAutoPlayNext();
   } else {
@@ -2133,6 +2153,7 @@ function renderStoryNode(node, skipTyping = false) {
         if (charIdx % 3 === 0) playSound('type');
       } else {
         clearInterval(typingTimer);
+        textEl.innerHTML = escapeHtml(rawText) + advanceChevron;
         renderChoices(node.choices);
         if (typeof checkAutoPlayNext === 'function') checkAutoPlayNext();
       }
@@ -2148,14 +2169,27 @@ function renderStoryNode(node, skipTyping = false) {
 
 function renderChoices(choices) {
   const choiceContainer = document.getElementById('choice-container');
+  if (!choiceContainer) return;
   choiceContainer.innerHTML = '';
   if (!choices || choices.length === 0) return;
 
-  choices.forEach(ch => {
+  choices.forEach((ch, idx) => {
     const btn = document.createElement('button');
     btn.className = 'choice-btn';
-    btn.textContent = ch.text[currentLang] || ch.text['id'];
-    btn.onclick = () => {
+    btn.type = 'button';
+    const indexStr = String(idx + 1).padStart(2, '0');
+    const label = ch.text[currentLang] || ch.text['id'];
+
+    btn.innerHTML = `
+      <div class="choice-btn-inner">
+        <span class="choice-index-tag">${indexStr}</span>
+        <span class="choice-label-text">${escapeHtml(label)}</span>
+        <span class="choice-arrow-icon">►</span>
+      </div>
+    `;
+    btn.onmouseenter = () => playSound('type');
+    btn.onclick = (e) => {
+      e.stopPropagation();
       playSound('sting');
       goToStoryNode(ch.nextNode);
     };
@@ -2988,6 +3022,14 @@ function applyLanguage() {
   document.getElementById('nav-txt-save').textContent = t.navSave;
   document.getElementById('hotspot-btn-txt').textContent = t.hotspotBtn;
   document.getElementById('ctrl-next').textContent = t.ctrlNext;
+  const ctrlSkip = document.getElementById('ctrl-skip');
+  if (ctrlSkip) ctrlSkip.textContent = t.ctrlSkip || 'Skip';
+  const ctrlLog = document.getElementById('ctrl-log');
+  if (ctrlLog) ctrlLog.textContent = t.ctrlLog || 'Log';
+  const ctrlDossier = document.getElementById('ctrl-dossier');
+  if (ctrlDossier) ctrlDossier.textContent = t.ctrlDossier || 'Dossier';
+  const dossierBtn = document.getElementById('dossier-btn-txt');
+  if (dossierBtn) dossierBtn.textContent = t.dossierBtnTxt || 'Berkas [D]';
   document.getElementById('ctrl-qsave').textContent = t.ctrlQSave;
   document.getElementById('ctrl-load').textContent = t.ctrlLoad;
   const ctrlCp = document.getElementById('ctrl-checkpoint');
@@ -3053,30 +3095,6 @@ function startNewGame() {
   goToStoryNode('c1_start');
 }
 
-function renderSidebarSuspects() {
-  const container = document.getElementById('suspects-list-container');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const list = ['vela', 'mira', 'brama', 'sena', 'reyn', 'archivist'];
-  list.forEach(key => {
-    const s = SUSPECTS_DATA[key];
-    if (!s) return;
-    const roleText = s.role[currentLang] || s.role['id'];
-    const row = document.createElement('div');
-    row.className = 'suspect-item';
-    row.onclick = () => interrogateSuspect(key);
-    row.innerHTML = `
-      <div class="suspect-avatar-mini">${s.avatar}</div>
-      <div>
-        <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">${s.name}</div>
-        <div style="font-size: 0.72rem; color: var(--text-muted);">${roleText}</div>
-      </div>
-    `;
-    container.appendChild(row);
-  });
-}
-
 function interrogateSuspect(suspectId) {
   const s = SUSPECTS_DATA[suspectId];
   if (!s) return;
@@ -3126,8 +3144,40 @@ function returnToMainMenu() {
   updateContinueButtonStatus();
 }
 
-function toggleAudioEngine() {
-  toggleAudio();
+function toggleDossierDrawer(forceState) {
+  const drawer = document.getElementById('sidebar-casebook');
+  const backdrop = document.getElementById('dossier-backdrop');
+  if (!drawer) return;
+
+  const isOpen = drawer.classList.contains('drawer-open');
+  const shouldOpen = forceState !== undefined ? forceState : !isOpen;
+
+  if (shouldOpen) {
+    drawer.classList.add('drawer-open');
+    if (backdrop) backdrop.classList.add('active');
+    playSound('type');
+  } else {
+    drawer.classList.remove('drawer-open');
+    if (backdrop) backdrop.classList.remove('active');
+  }
+}
+
+function skipToNextChoice() {
+  const node = STORY_NODES[gameState.currentNode];
+  if (!node) return;
+  if (!node.choices || node.choices.length === 0) return;
+
+  if (node.choices.length === 1) {
+    playSound('type');
+    goToStoryNode(node.choices[0].nextNode, true);
+  } else {
+    showToast(currentLang === 'en' ? 'Choice required to proceed!' : 'Pilihan diperlukan untuk lanjut!');
+    const container = document.getElementById('choice-container');
+    if (container) {
+      container.classList.add('shake');
+      setTimeout(() => container.classList.remove('shake'), 400);
+    }
+  }
 }
 
 function advanceDialogue() {
@@ -3138,9 +3188,10 @@ function advanceDialogue() {
   const rawText = node.text[currentLang] || node.text['id'];
 
   // If text is still typing, finish immediately
-  if (textEl.textContent.length < rawText.length) {
+  const cleanCurrent = (textEl.textContent || '').replace('▼', '').trim();
+  if (cleanCurrent.length < rawText.trim().length) {
     clearInterval(typingTimer);
-    textEl.textContent = rawText;
+    textEl.innerHTML = escapeHtml(rawText) + ' <span class="renpy-advance-chevron">▼</span>';
     renderChoices(node.choices);
     if (typeof checkAutoPlayNext === 'function') checkAutoPlayNext();
     return;
@@ -3295,17 +3346,31 @@ function initRainCanvas(canvasId) {
   render();
 }
 
-// Keyboard shortcuts for detective navigation
+// Keyboard shortcuts for detective navigation & visual novel controls
 window.addEventListener('keydown', (e) => {
+  const activeModal = document.querySelector('.modal-backdrop.active');
+  const drawer = document.getElementById('sidebar-casebook');
+  const isDrawerOpen = drawer && drawer.classList.contains('drawer-open');
+  const isInput = ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName);
+
   if (e.code === 'Space') {
-    const activeModal = document.querySelector('.modal-backdrop.active');
-    if (!activeModal) {
+    if (!activeModal && !isInput) {
       e.preventDefault();
       advanceDialogue();
     }
   } else if (e.code === 'Escape') {
-    document.querySelectorAll('.modal-backdrop.active').forEach(m => m.classList.remove('active'));
-  } else if (e.key >= '1' && e.key <= '4') {
+    if (activeModal) {
+      document.querySelectorAll('.modal-backdrop.active').forEach(m => m.classList.remove('active'));
+    }
+    if (isDrawerOpen) {
+      toggleDossierDrawer(false);
+    }
+  } else if ((e.key === 'd' || e.key === 'D' || e.key === 'Tab') && !isInput && !activeModal) {
+    e.preventDefault();
+    toggleDossierDrawer();
+  } else if ((e.key === 'l' || e.key === 'L') && !isInput && !activeModal) {
+    openBacklogModal();
+  } else if (e.key >= '1' && e.key <= '4' && !isInput && !activeModal) {
     const choices = document.querySelectorAll('#choice-container .choice-btn');
     const idx = parseInt(e.key) - 1;
     if (choices[idx]) {
