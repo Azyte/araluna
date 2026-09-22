@@ -2417,6 +2417,22 @@
         </div>
       </div>
 
+      <!-- Dialogue Voice Audio Style -->
+      <div class="settings-group">
+        <label class="settings-label" id="m-set-lbl-voice">GAYA SUARA BICARA KARAKTER (DIALOGUE VOCALIZATION):</label>
+        <div class="settings-options-row" id="voice-options-row">
+          <button class="settings-pill-btn active" data-voice-style="voice" onclick="setDialogueVoiceStyle('voice')">
+            🗣️ Vokal Karakter ("br-br-br" Persona)
+          </button>
+          <button class="settings-pill-btn" data-voice-style="typewriter" onclick="setDialogueVoiceStyle('typewriter')">
+            ⌨️ Mesin Tik Noir Klasik
+          </button>
+          <button class="settings-pill-btn" data-voice-style="none" onclick="setDialogueVoiceStyle('none')">
+            🔇 Hening
+          </button>
+        </div>
+      </div>
+
       <!-- Sound Volume -->
       <div class="settings-group">
         <label class="settings-label" id="m-set-lbl-audio">SUARA & SUASANA (AUDIO ENGINE):</label>
@@ -3836,6 +3852,7 @@ const I18N = {
     ctrlQSave: "Simpan Cepat",
     ctrlLoad: "Muat",
     ctrlCheckpoint: "Checkpoint",
+    lblVoiceStyle: "GAYA SUARA BICARA KARAKTER (DIALOGUE VOCALIZATION):",
     focusTitle: "KETAJAMAN PIKIRAN ARUN",
     chapTitle: "Bab 1: Jejak Pertama",
     cluesTitle: "CATATAN BUKTI & PETUNJUK",
@@ -3889,6 +3906,7 @@ const I18N = {
     ctrlQSave: "Quick Save",
     ctrlLoad: "Load",
     ctrlCheckpoint: "Checkpoint",
+    lblVoiceStyle: "CHARACTER DIALOGUE VOCALIZATION STYLE:",
     focusTitle: "ARUN'S MENTAL ACUITY",
     chapTitle: "Chapter 1: The First Scent",
     cluesTitle: "OBSERVED EVIDENCE & NOTES",
@@ -3942,6 +3960,7 @@ const I18N = {
     ctrlQSave: "Save Cepet",
     ctrlLoad: "Muat",
     ctrlCheckpoint: "Checkpoint",
+    lblVoiceStyle: "GAYA SUARA NGOMONG KARAKTER (VOICE FX):",
     focusTitle: "KETAJAMAN KEPALA ARUN",
     chapTitle: "Bab 1: Jejak Pertama",
     cluesTitle: "BARANG BUKTI & KEJANGGALAN",
@@ -5559,6 +5578,152 @@ function triggerDistantThunder() {
   osc.stop(now + 3.3);
 }
 
+let dialogueVoiceStyle = localStorage.getItem('araluna_voice_style') || 'voice'; // 'voice', 'typewriter', 'none'
+
+const CHARACTER_VOICE_PROFILES = {
+  arun: {
+    baseFreq: 140,
+    wave: 'triangle',
+    filterFreq: 520,
+    q: 3.2,
+    detuneRange: 16
+  },
+  vela: {
+    baseFreq: 265,
+    wave: 'triangle',
+    filterFreq: 940,
+    q: 2.8,
+    detuneRange: 24
+  },
+  mira: {
+    baseFreq: 385,
+    wave: 'sine',
+    filterFreq: 1220,
+    q: 2.4,
+    detuneRange: 32
+  },
+  brama: {
+    baseFreq: 185,
+    wave: 'sawtooth',
+    filterFreq: 640,
+    q: 3.6,
+    detuneRange: 22
+  },
+  sena: {
+    baseFreq: 235,
+    wave: 'sine',
+    filterFreq: 860,
+    q: 3.2,
+    detuneRange: 16
+  },
+  reyn: {
+    baseFreq: 115,
+    wave: 'triangle',
+    filterFreq: 440,
+    q: 4.2,
+    detuneRange: 14
+  },
+  archivist: {
+    baseFreq: 95,
+    wave: 'sawtooth',
+    filterFreq: 340,
+    q: 4.6,
+    detuneRange: 26
+  }
+};
+
+function setDialogueVoiceStyle(style) {
+  dialogueVoiceStyle = style;
+  localStorage.setItem('araluna_voice_style', style);
+  updateVoiceStyleButtons();
+  if (style !== 'none') {
+    playDialogueVoice('arun', 'A');
+  }
+  showToast(
+    style === 'voice' 
+      ? (currentLang === 'en' ? 'Voice Murmurs Active ("br-br-br")' : 'Suara Vokal Karakter Aktif ("br-br-br")')
+      : style === 'typewriter'
+      ? (currentLang === 'en' ? 'Noir Typewriter Audio Active' : 'Suara Mesin Tik Noir Aktif')
+      : (currentLang === 'en' ? 'Dialogue Voice Muted' : 'Suara Dialog Dimatikan')
+  );
+}
+
+function updateVoiceStyleButtons() {
+  const buttons = document.querySelectorAll('#voice-options-row .settings-pill-btn');
+  buttons.forEach(btn => {
+    const style = btn.getAttribute('data-voice-style');
+    btn.classList.toggle('active', style === dialogueVoiceStyle);
+  });
+}
+
+function playDialogueVoice(speakerKey, char) {
+  if (isAudioMuted || dialogueVoiceStyle === 'none') return;
+  const ctx = getAudioContext();
+  if (!ctx || !masterGainNode) return;
+  const now = ctx.currentTime;
+
+  const key = (speakerKey || '').toLowerCase().trim();
+  const profile = CHARACTER_VOICE_PROFILES[key];
+
+  if (dialogueVoiceStyle === 'voice' && profile) {
+    // 1. CHARACTER VOCALIZATION ("br-br-br" Animalese / Ace Attorney / Undertale blip)
+    const osc = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+
+    osc.type = profile.wave;
+
+    // Pitch inflection per character letter
+    const charCode = (char ? char.charCodeAt(0) : 65);
+    const inflection = ((charCode % 7) - 3) * (profile.detuneRange / 3);
+    const targetFreq = Math.max(60, profile.baseFreq + inflection);
+
+    osc.frequency.setValueAtTime(targetFreq, now);
+
+    // Formant filter (human vowel tract resonance)
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(profile.filterFreq, now);
+    filter.Q.setValueAtTime(profile.q, now);
+
+    // Punchy, pleasant acoustic envelope
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.16, now + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.052);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGainNode);
+
+    osc.start(now);
+    osc.stop(now + 0.058);
+  } else {
+    // 2. MECHANICAL NOIR TYPEWRITER STRIKE
+    // Layer A: Crisp mechanical snap transient
+    const snapOsc = ctx.createOscillator();
+    const snapGain = ctx.createGain();
+    snapOsc.type = 'triangle';
+    snapOsc.frequency.setValueAtTime(1400 + Math.random() * 400, now);
+    snapGain.gain.setValueAtTime(0.07, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
+    snapOsc.connect(snapGain);
+    snapGain.connect(masterGainNode);
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.025);
+
+    // Layer B: Metal lever body plonk
+    const bodyOsc = ctx.createOscillator();
+    const bodyGain = ctx.createGain();
+    bodyOsc.type = 'sine';
+    bodyOsc.frequency.setValueAtTime(440 + Math.random() * 80, now);
+    bodyGain.gain.setValueAtTime(0.09, now);
+    bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.038);
+    bodyOsc.connect(bodyGain);
+    bodyGain.connect(masterGainNode);
+    bodyOsc.start(now);
+    bodyOsc.stop(now + 0.042);
+  }
+}
+
 function playSound(type) {
   if (isAudioMuted) return;
   const ctx = getAudioContext();
@@ -5567,16 +5732,8 @@ function playSound(type) {
   const now = ctx.currentTime;
 
   if (type === 'type') {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(380 + Math.random() * 180, now);
-    gain.gain.setValueAtTime(0.025, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.038);
-    osc.connect(gain);
-    gain.connect(masterGainNode);
-    osc.start(now);
-    osc.stop(now + 0.045);
+    playDialogueVoice('narasi', 'A');
+    return;
   } else if (type === 'chime') {
     [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
       const osc = ctx.createOscillator();
@@ -5939,7 +6096,7 @@ function renderStoryNode(node, skipTyping = false) {
 
   const advanceChevron = ' <span class="renpy-advance-chevron">▼</span>';
 
-  if (skipTyping) {
+  if (skipTyping || textSpeed === 0) {
     textEl.innerHTML = escapeHtml(rawText) + advanceChevron;
     renderChoices(node.choices);
     if (typeof checkAutoPlayNext === 'function') checkAutoPlayNext();
@@ -5947,18 +6104,37 @@ function renderStoryNode(node, skipTyping = false) {
     textEl.textContent = '';
     let charIdx = 0;
     clearInterval(typingTimer);
-    typingTimer = setInterval(() => {
+    clearTimeout(typingTimer);
+
+    const speakerKey = (node.speaker || '').toLowerCase().trim();
+
+    const typeNextChar = () => {
       if (charIdx < rawText.length) {
-        textEl.textContent += rawText.charAt(charIdx);
+        const char = rawText.charAt(charIdx);
+        textEl.textContent += char;
         charIdx++;
-        if (charIdx % 3 === 0) playSound('type');
+
+        let delay = textSpeed;
+        if (char !== ' ' && char !== '\n' && charIdx % 2 === 0) {
+          playDialogueVoice(speakerKey, char);
+        }
+
+        // Slight dramatic pause for punctuation
+        if (char === '.' || char === '!' || char === '?') {
+          delay += 140;
+        } else if (char === ',' || char === ';' || char === ':') {
+          delay += 70;
+        }
+
+        typingTimer = setTimeout(typeNextChar, delay);
       } else {
-        clearInterval(typingTimer);
         textEl.innerHTML = escapeHtml(rawText) + advanceChevron;
         renderChoices(node.choices);
         if (typeof checkAutoPlayNext === 'function') checkAutoPlayNext();
       }
-    }, textSpeed);
+    };
+
+    typeNextChar();
   }
 
   // Record to dialogue backlog
@@ -6864,6 +7040,9 @@ function applyLanguage() {
   renderCaseLibrary();
   renderSidebarSuspects();
   updateContinueButtonStatus();
+  const lblVoice = document.getElementById('m-set-lbl-voice');
+  if (lblVoice) lblVoice.textContent = t.lblVoiceStyle || 'GAYA SUARA BICARA KARAKTER (DIALOGUE VOCALIZATION):';
+  updateVoiceStyleButtons();
 
   // Instant refresh of current dialogue without restart
   if (STORY_NODES[gameState.currentNode]) {
@@ -6991,6 +7170,7 @@ function advanceDialogue() {
   // If text is still typing, finish immediately
   const cleanCurrent = (textEl.textContent || '').replace('▼', '').trim();
   if (cleanCurrent.length < rawText.trim().length) {
+    clearTimeout(typingTimer);
     clearInterval(typingTimer);
     textEl.innerHTML = escapeHtml(rawText) + ' <span class="renpy-advance-chevron">▼</span>';
     renderChoices(node.choices);
